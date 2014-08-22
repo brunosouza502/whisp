@@ -63,7 +63,7 @@ public class FollowController extends HttpServlet {
                     List<Follow> followers = dao.all(follow);
                     
                     Gson gson = new Gson();
-                    String json = gson.toJson(followers);
+                    String json = gson.toJson(followers);//ver seguidores "por json"
                     
                     response.getOutputStream().print(json);
                     
