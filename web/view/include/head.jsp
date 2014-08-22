@@ -1,0 +1,2 @@
+        <link rel="icon" href="${pageContext.servletContext.contextPath}/favicon.ico"/>
+        <link href="${pageContext.servletContext.contextPath}/assets/vendor/css/bootstrap.min.css" rel="stylesheet">

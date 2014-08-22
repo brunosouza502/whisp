@@ -1,0 +1,2 @@
+        <script src="${pageContext.servletContext.contextPath}/assets/vendor/js/jquery-1.11.1.min.js"></script>
+        <script src="${pageContext.servletContext.contextPath}/assets/vendor/js/bootstrap.min.js"></script>
