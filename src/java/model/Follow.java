@@ -15,6 +15,7 @@ public class Follow {
     Integer idSeguidor;//id do seguidor
     Integer idSeguido;//id de quem está sendo seguido, como o usuario autenticado
     String nomeSeguidor;//nome de seguidores, para listá-los
+    String nomeSeguido;//nome dos usuarios seguidos
 
     public Integer getIdFollowing() {
         return idFollowing;
@@ -46,6 +47,14 @@ public class Follow {
 
     public void setNomeSeguidor(String nomeSeguidor) {
         this.nomeSeguidor = nomeSeguidor;
+    }
+
+    public String getNomeSeguido() {
+        return nomeSeguido;
+    }
+
+    public void setNomeSeguido(String nomeSeguido) {
+        this.nomeSeguido = nomeSeguido;
     }
     
     

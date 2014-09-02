@@ -25,6 +25,7 @@
         <form action="${pageContext.servletContext.contextPath}/post/delete" method="POST">
             <c:forEach var="p" items="${posts}">
                 <textarea  id="MyBtn" name="editpost" disabled><c:out value="${p.texto}"/></textarea> <br>
+                <a href="${pageContext.servletContext.contextPath}/post/comentarios?idpost=${p.idPost}&id=${usuario.id}">Ver comentarios</a>
                 <!--<button onclick="myFunction()">Editar</button>-->
                 <a href="${pageContext.servletContext.contextPath}/post/update?idpost=${p.idPost}">Editar</a>
                 <a href="${pageContext.servletContext.contextPath}/post/delete?idpost=${p.idPost}">Excluir</a>
@@ -34,6 +35,13 @@
                 
                 <input type="submit" value="Excluir Posts">    
         </form>
+            <br><br>
+            
+            <c:forEach var="r" items="${republicacoes}">
+                Republicado de: <a href="${pageContext.servletContext.contextPath}/usuario/read?id=${r.idUsuario}"><c:out value="${r.nomeUsuarioPost}"/></a> <br>
+                <textarea  name="editpost" disabled><c:out value="${r.texto}"/></textarea> <br>
+  
+            </c:forEach>
             
         <a href="${pageContext.servletContext.contextPath}/">Home Page</a>
     </body>

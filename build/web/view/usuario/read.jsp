@@ -26,7 +26,22 @@
         
         
         <c:forEach var="p" items="${userposts}">
-                <textarea  id="MyBtn" name="editpost" disabled><c:out value="${p.texto}"/></textarea> <br>  
+                <textarea  id="MyBtn" name="editpost" disabled><c:out value="${p.texto}"/></textarea> <br>
+                <a href="${pageContext.servletContext.contextPath}/like?iduserliker=${usuario.id}&idpostliked=${p.idPost}&idusuarioown=${userprofile.id}">
+                    Curtir
+                </a> 
+                    <a href="${pageContext.servletContext.contextPath}/post/comentarios?idpost=${p.idPost}&id=${usuario.id}">Ver comentarios</a>
+                    <form action="${pageContext.servletContext.contextPath}/comentar" method="POST">
+                        <input type="hidden" name="idpost" value="${p.idPost}">
+                        <input type="hidden" name="idcomentador" value="${usuario.id}">
+                        <textarea name="comentario" rows="1" cols="10"> </textarea>
+                        <input type="submit" value="Comentar">
+                    </form>
+                        <a 
+                            href="${pageContext.servletContext.contextPath}/post/republicar?idrepublicador=${usuario.id}&idusuariopost=${userprofile.id}&idpostrepublicado=${p.idPost}">
+                            Republicar
+                        </a>
+                <br>
         </c:forEach>
                 
         <a href="${pageContext.servletContext.contextPath}/usuario">Voltar</a>

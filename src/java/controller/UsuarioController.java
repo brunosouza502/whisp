@@ -52,8 +52,9 @@ public class UsuarioController extends HttpServlet {
                     
                     request.setAttribute("userposts", userPostList);
                     request.setAttribute("userprofile", usuario);
+                    //mostrar republicações do usuario visitado
                     
-                    dispatcher = request.getRequestDispatcher("/view/usuario/read.jsp");//pagina para posts de outro usuarios
+                    dispatcher = request.getRequestDispatcher("/view/usuario/read.jsp");//pagina para perfil com posts de outro usuarios
                     dispatcher.forward(request, response);
                     
                 }catch (SQLException ex) {

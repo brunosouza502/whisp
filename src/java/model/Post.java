@@ -17,6 +17,7 @@ public class Post {
     private Integer idPost;
     private String texto;
     private Timestamp horario;
+    private String nomeUsuarioPost;//nome usuario dono do post
 
     public Integer getIdUsuario() {
         return idUsuario;
@@ -48,6 +49,14 @@ public class Post {
 
     public void setHorario(Timestamp horario) {
         this.horario = horario;
+    }
+
+    public String getNomeUsuarioPost() {
+        return nomeUsuarioPost;
+    }
+
+    public void setNomeUsuarioPost(String nomeUsuarioPost) {
+        this.nomeUsuarioPost = nomeUsuarioPost;
     }
     
     

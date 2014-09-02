@@ -64,6 +64,31 @@ public class DAOFactory implements AutoCloseable {
         return new FollowDAO(connection);
     }
     
+    //para Curtir
+    public CurtirDAO getCurtirDAO(){
+        return new CurtirDAO(connection);
+    }
+    
+    //para tags de temas
+    public TagDAO getTagDAO(){
+        return new TagDAO(connection);
+    }
+    
+    //para comentarios em posts
+    public ComentarioDAO getComentarioDAO(){
+        return new ComentarioDAO(connection);
+    }
+    
+    //para republicações
+    public RepublicarDAO getRepublicarDAO(){
+        return new RepublicarDAO(connection);
+    }
+    
+    //para formar buscas
+    public BuscaDAO getBuscaDAO(){
+        return new BuscaDAO(connection);
+    }
+    
     @Override
     public void close() throws SQLException {
         closeConnection();

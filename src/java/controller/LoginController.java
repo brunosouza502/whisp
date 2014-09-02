@@ -67,6 +67,7 @@ public class LoginController extends HttpServlet {
                     postDAO = daoFactory.getPostDAO();
 
                     dao.authenticate(usuario);
+                    //fazer um metodo 'return login' para mostrar posts do usuarios que esta seguindo
 
                     HttpSession session = request.getSession();
                     session.setAttribute("usuario", usuario);

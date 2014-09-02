@@ -27,8 +27,8 @@ function visualizaUsuario() {
 function visualizaSeguidores(){
     $.get($(this).data('href'), function(data){
        var follower = JSON.parse(data);
-       $('#modal_nome').html('' + follower.nomeSeguidor);
-       $('modal_visualiza_seguidores').modal();
+       $('#modal_nome').html('<strong>Nome: </strong>' + follower.nomeSeguidor);
+       $('#modal_visualiza_seguidores').modal();
     });
 }
 
@@ -37,4 +37,5 @@ $(document).ready(function() {
     $(document).on('click', '.link_excluir_usuario', excluiUsuario);
     $(document).on('click', '.button_confirmacao_excluir_usuarios', excluiUsuarios);
     $(document).on('click', '.link_visualizar_usuario', visualizaUsuario);
+    $(document).on('click', '.link_visualizar_seguidores', visualizaSeguidores);
 });

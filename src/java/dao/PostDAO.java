@@ -21,10 +21,15 @@ import model.Usuario;
  */
 public class PostDAO extends DAO<Post>{//DAO de criação de posts
     private static final String postQuery = "INSERT INTO post(id_usuario, texto, horario) VALUES(?, ?, 'now')";
-    private static final String showPostQuery = "SELECT * FROM post WHERE id_usuario = ?";
+    private static final String showPostQuery = "SELECT * FROM post WHERE id_usuario = ? ORDER BY horario DESC";
     private static final String editPostQuery = "SELECT * FROM post WHERE id_post = ?";
     private static final String deletePostQuery = "DELETE FROM post WHERE id_post = ?";
     private static final String updatePostQuery = "UPDATE post SET texto = ? WHERE id_post = ?";
+    
+    private static final String newsfeed = "SELECT u.nome, s.id_seguido, p.texto, p.id_post, p.horario " 
+                                          +"FROM seguir s  JOIN usuario u ON s.id_seguido = u.id JOIN post p ON u.id = p.id_usuario " 
+                                          +"WHERE s.id_seguidor = ? AND p.horario > 'yesterday' " 
+                                          +"ORDER BY p.horario DESC";//feed de noticias para ver posts de usuarios que eu sigo
     
     public PostDAO(Connection connection) {
         super(connection);
@@ -137,5 +142,29 @@ public class PostDAO extends DAO<Post>{//DAO de criação de posts
     @Override
     public List<Usuario> profileUser(Integer id) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public List<Post> newsfeed(Integer id) throws SQLException{
+        List<Post> news = new ArrayList<>();
+        try(PreparedStatement statement = connection.prepareStatement(newsfeed)){
+            statement.setInt(1, id);
+            try(ResultSet result = statement.executeQuery()){
+                while(result.next()){
+                    Post feed = new Post();
+                    feed.setNomeUsuarioPost(result.getString("nome"));
+                    feed.setIdUsuario(result.getInt("id_seguido"));//usuario seguido, autor do post
+                    feed.setTexto(result.getString("texto"));
+                    feed.setIdPost(result.getInt("id_post"));
+                    feed.setHorario(result.getTimestamp("horario"));
+                    
+                    news.add(feed);
+                }
+            }catch (SQLException ex) {
+                throw ex;
+            }
+            
+                return news;
+            }
+    
     }
 }

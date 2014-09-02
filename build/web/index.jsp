@@ -18,6 +18,8 @@
 
                 <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
             </form>
+                
+            <a href="${pageContext.servletContext.contextPath}/usuario/create">Cadastrar usuário</a>
         </div>
 
         <session:erro mensagem="${sessionScope.erro}"/>

@@ -8,9 +8,13 @@ package controller;
 
 import dao.DAO;
 import dao.DAOFactory;
+import dao.PostDAO;
+import dao.RepublicarDAO;
+import dao.TagDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -20,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.Post;
+import model.Republicar;
 import model.Usuario;
 
 /**
@@ -31,7 +36,9 @@ import model.Usuario;
                             "/allposts",
                             "/post/delete",
                             "/post/update",
-                            "/post/user"})//visualizar posts de outros usuarios
+                            "/post/user",//visualizar posts de outros usuarios
+                            "/post/newsfeed"//visualizar feed de noticias post de usuarios que que eu sigo
+})
 public class PostController extends HttpServlet {
 
     @Override
@@ -39,7 +46,10 @@ public class PostController extends HttpServlet {
             throws ServletException, IOException {
         DAO dao;
         DAO userDAO;
+        RepublicarDAO republicarDAO;
+        PostDAO newsfeedDAO;//objeto para visualizações de posts de ususarios que eu sigo
         Post userPost = new Post();//id de usuario para acessar seus devidos posts; id_usuario na tabela post
+        Republicar userRepublications = new Republicar();
         RequestDispatcher dispatcher;
         //HttpSession session = request.getSession();
         //session.getAttribute("usuario");
@@ -47,12 +57,17 @@ public class PostController extends HttpServlet {
             case "/allposts": //mostrar os posts
                 try (DAOFactory daoFactory = new DAOFactory();){
                     dao = daoFactory.getPostDAO();
+                    republicarDAO = daoFactory.getRepublicarDAO();
                     
                     userPost.setIdUsuario(Integer.parseInt(request.getParameter("id")));
+                    userRepublications.setIdUsuario(Integer.parseInt(request.getParameter("id")));
 
                     //passa o id do usuario ja existente para obj Post                    
                     List<Post> postList = dao.all(userPost);//para visitas de usuario tambem
+                    List<Republicar> republications = republicarDAO.all(userRepublications);//listar republicacoes tambem
+                    
                     request.setAttribute("posts", postList);
+                    request.setAttribute("republicacoes", republications);
                     
                     dispatcher = request.getRequestDispatcher("/view/usuario/posts/allposts.jsp");
                     dispatcher.forward(request, response);
@@ -111,6 +126,24 @@ public class PostController extends HttpServlet {
                     System.err.println(ex.getMessage());
                     response.sendRedirect(request.getContextPath() + "/view/usuario/posts/allposts.jsp");
                 }
+            
+            break;
+            
+            case "/post/newsfeed"://verificar feed de noticias, posts de usuarios que eu sigo
+                try (DAOFactory daoFactory = new DAOFactory();){
+                    newsfeedDAO = daoFactory.getPostDAO();
+                    
+                    List<Post> newsfeed = newsfeedDAO.newsfeed(Integer.parseInt(request.getParameter("id")));
+                    
+                    request.setAttribute("newsfeed", newsfeed);
+                    
+                    dispatcher = request.getRequestDispatcher("/view/usuario/posts/newsfeed.jsp");
+                    dispatcher.forward(request, response);
+                    
+                }catch (SQLException ex) {
+                    System.err.println(ex.getMessage());
+                    response.sendRedirect(request.getContextPath() + "/view/usuario/posts/allposts.jsp");
+                }
         }
     }
 
@@ -118,20 +151,48 @@ public class PostController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         DAO dao;
+        TagDAO tagDao;
         RequestDispatcher dispatcher;
         Post post = new Post();
         Usuario usuario = new Usuario();//talvez precise por causa do id de usuario
         Integer idUser;
-        String tema;//procura o tema que o post está associado
+        char[] tema;//procura o tema que o post está associado ou está criando
+        String parsePost;//procura tags
+        String tag;
         
         switch(request.getServletPath()){
             case "/post": //post: create para Posts
                 post.setIdUsuario(Integer.parseInt(request.getParameter("idusuario")));
                 //tema = request.getParameter("wallpost");//verificar se possui #
                 post.setTexto(request.getParameter("wallpost"));
+                parsePost = request.getParameter("wallpost");
+                int hashtagpos = parsePost.indexOf("#") + 1;//posicao da primeira hashtag se existir + 1; pois é o nome da tag
+                int temasize = 0;//tamanho da nova substring que é o tema
+                //pegar posicoes de # e fazer o parsing com as posicoes de # que possui
+                
+                //funciona para uma tag
+                for (int i=hashtagpos;i<parsePost.length();i++){//trocar por um while; precisa parar quando encontra fim de string
+                    temasize++;
+                    if(parsePost.charAt(i)==' ' || parsePost.charAt(i)=='\0')
+                        tema = new char[temasize];//nova string deve ter o mesmo tamanho do tema
+                        //tema[i]=parsePost.charAt(i);                    
+                }
+                
+                tema = new char[temasize];
+                int pos = 0;
+                for (int i=hashtagpos;i<parsePost.length();i++){ //trocar de strings
+                    tema[pos] = parsePost.charAt(i);
+                    pos++;
+                }
+                
+                tag = new String(tema);
+                System.out.println(temasize + " " + tema.length + " " + tag);
                 
                 try (DAOFactory daoFactory = new DAOFactory();) {
                     dao = daoFactory.getPostDAO();
+                    tagDao = daoFactory.getTagDAO();
+                    System.out.println(" "+tag);
+                    
                     dao.create(post);
                 } catch (SQLException ex) {
                     System.err.println(ex.getMessage());
